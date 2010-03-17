@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kml
+  xmlns="http://www.opengis.net/kml/2.2"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  >
+  <Document>
+
+    <Style id="geonamesStyle">
+      <IconStyle>
+        <scale>0.7</scale>
+        <Icon>
+          <href>http://google-maps-icons.googlecode.com/files/monument.png</href>
+        </Icon>
+      </IconStyle>
+      <BalloonStyle>
+        <text><span tal:replace="structure string:&lt;![CDATA[" />
+          <div>
+          <div style="padding-top:1.5em"><h1>$[name]</h1></div>
+          $[description]
+          </div>
+        <span tal:replace="structure string:]]&gt;"/></text>
+      </BalloonStyle>
+    </Style>
+
+    <Style id="pleiadesStyle">
+      <IconStyle>
+        <scale>0.7</scale>
+        <Icon>
+          <href>http://google-maps-icons.googlecode.com/files/justice.png</href>
+        </Icon>
+      </IconStyle>
+      <LineStyle>
+        <color>ffff0000</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>33ff0000</color>
+      </PolyStyle>
+      <BalloonStyle>
+        <text><span tal:replace="structure string:&lt;![CDATA[" />
+          <div style="background-image:url(http://pleiades.stoa.org/++resource++pleiades.notredame.images/background-nereid.gif); background-position:bottom center; background-repeat:no-repeat; padding: 1em 1em 0em">
+          <div style="padding-top:1.5em"><h1>$[name]</h1></div>
+          $[description]
+          <div style="font-size:smaller">Copyright © Ancient World Mapping Center and Institute for the Study of the Ancient World. Sharing and remixing permitted under terms of the Creative Commons Attribution 3.0 License (cc-by).</div>
+          </div>
+        <span tal:replace="structure string:]]&gt;"/></text>
+      </BalloonStyle>
+    </Style>
+    
+    <name>Pleiades Place Matching Results</name>
+    <Snippet>Search for likely matching modern and ancient places</Snippet>
+    <description>
+    <span tal:replace="structure string:&lt;![CDATA[" />
+      <div>
+        <p>Home:
+          <a 
+            tal:attributes="href view/alternate_link" 
+            tal:content="view/alternate_link"
+            >ITEM URL
+          </a>
+        </p>
+        <p>Search for likely matching modern and ancient places</p>
+      </div>
+    <span tal:replace="structure string:]]&gt;" />
+    </description>
+    <visibility>1</visibility>
+    <open>1</open>
+
+    <tal:sets tal:repeat="set view/matchsets">
+    <Folder> <!-- Corresponds to a key -->
+      <name tal:content="string:Match key: ${set/key}">TITLE</name>
+      <description tal:content="string:Modern name: ${set/mn}, Ancient name: ${set/an}">DESCRIPTION</description>
+      
+      <Folder>
+        <name>Modern places</name>
+        <description>From Geonames: http://www.geonames.org</description>
+        <tal:features tal:repeat="pm set/modern_places">
+        <Placemark>
+          <name tal:content="pm/name">TITLE</name>
+          <description >
+          <span tal:replace="structure string:&lt;![CDATA[" />
+            <div>
+              <p>URL:
+                <a 
+                  tal:attributes="href pm/url" 
+                  tal:content="pm/url"
+                  >ITEM URL
+                </a>
+              </p>
+              <p tal:content="string:${pm/name}, ${pm/countryName}">ITEM DESCRIPTION</p>
+            </div>
+          <span tal:replace="structure string:]]&gt;" />
+          </description>
+          <styleUrl>#geonamesStyle</styleUrl>
+          <Point>
+            <coordinates tal:content="string:${pm/lng},${pm/lat},0.0">COORDINATE LIST</coordinates>
+          </Point>
+        </Placemark>
+        </tal:features>
+      </Folder>
+      
+      <Folder>
+        <name>Ancient places</name>
+        <description>From Pleiades: http://pleiades.stoa.org</description>
+        <tal:features tal:repeat="pm set/ancient_placemarks">
+        <Placemark>
+          <name tal:content="pm/name">TITLE</name>
+          <description>
+            <span tal:replace="structure string:&lt;![CDATA[" />
+              <div>
+                <p>URL:
+                  <a 
+                    tal:attributes="href pm/alternate_link" 
+                    tal:content="pm/alternate_link"
+                    >ITEM URL
+                  </a>
+                </p>
+                <p tal:content="pm/description">ITEM DESCRIPTION</p>
+                <p>Attested: <span tal:content="pm/timePeriods">A, B</span></p>
+              </div>
+            <span tal:replace="structure string:]]&gt;" />
+          </description>
+          <styleUrl>#pleiadesStyle</styleUrl>
+          <Point tal:condition="pm/hasPoint">
+            <coordinates tal:content="pm/coords_kml">
+              COORDINATE LIST
+            </coordinates>
+          </Point>
+          <LineString tal:condition="pm/hasLineString">
+            <coordinates tal:content="pm/coords_kml">
+              COORDINATE LIST
+            </coordinates>
+          </LineString>
+          <Polygon tal:condition="pm/hasPolygon">
+            <outerBoundaryIs>
+              <LinearRing>
+                <coordinates tal:content="pm/coords_kml">
+                  COORDINATE LIST
+                </coordinates>
+              </LinearRing>
+            </outerBoundaryIs>
+          </Polygon>
+        </Placemark>
+        </tal:features>
+      </Folder><!-- end ancient places -->
+    
+    </Folder><!-- end key -->
+    </tal:sets>
+  
+  </Document>
+</kml>

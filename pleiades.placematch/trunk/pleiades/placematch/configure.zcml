@@ -11,4 +11,11 @@
       permission="zope2.View"
       />
 
+  <browser:page
+      for="*"
+      name="place-match-form"
+      class=".matching.PlaceMatcherForm"
+      permission="zope2.View"
+      />
+
 </configure>
