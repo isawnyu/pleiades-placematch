@@ -1,1 +1,1 @@
-global-include *.txt *.zcml *.GPL *.cfg *.xml
+global-include *.txt *.zcml *.GPL *.cfg *.xml *.pt
