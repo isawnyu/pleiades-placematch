@@ -154,7 +154,7 @@ class IPlaceMatch(Interface):
     """Single place matching interface"""
     mn = schema.TextLine(title=u'Modern name', 
                                  description=u'Modern place name', 
-                                 required=True)
+                                 required=False)
     
     co = schema.TextLine(title=u'Country code', 
     description=u'2-letter ISO country code for disambiguation of modern names', 
@@ -183,15 +183,14 @@ class Form(form.Form):
             return
         self._data = data
         catalog = getToolByName(self.context, 'portal_catalog')
-        s = MatchSet('0', data.get('mn'), data.get('co'), data.get('an'), 
+        ms = MatchSet('0', data.get('mn'), data.get('co'), data.get('an'), 
                      catalog, self.request)
-        self._results = dict(modern=s.modern_places(), 
-                             ancient=s.ancient_places())
+        self._results = dict(modern=ms.modern_places(), 
+                             ancient=ms.ancient_places())
 
     @button.buttonAndHandler(_('Clear'), name='clear')
     def handleClear(self, action):
-        self._data = None
-        self._results = None
+        self.request.response.redirect(self.request.getURL())
 
 
 class PlaceMatcherForm(FormWrapper):
