@@ -105,12 +105,10 @@ class PlaceMatcher(BrowserView):
         self.an = unicode(self.request.form.get('an', ''), 'utf-8') or None
         self.format =  self.request.form.get('f', '')
 
-    @property
-    @memoize
     def alternate_link(self):
-        form_params = {'form.widgets.mn': self.mn.encode('utf-8') or '',
-                       'form.widgets.co': self.co or '',
-                       'form.widgets.an': self.an.encode('utf-8') or ''}
+        form_params = {'form.widgets.mn': (self.mn or u'').encode('utf-8'),
+                       'form.widgets.co': (self.co or u'').encode('utf-8'),
+                       'form.widgets.an': (self.an or u'').encode('utf-8')}
         return '%s/@@place-match-form?%s' % (
             self.context.absolute_url(),
             urllib.urlencode(form_params)
