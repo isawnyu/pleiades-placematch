@@ -1,0 +1,65 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone.z3cform">
+  <head>
+    <metal:main fill-slot="javascript_head_slot">
+    <metal:js_macro metal:define-macro="js">
+    </metal:js_macro>
+    </metal:main>
+  </head>
+  
+<body>
+
+  <metal:main fill-slot="main">
+    <tal:main-macro metal:define-macro="main">
+
+      <h1 class="documentFirstHeading">Place Match and Search</h1>
+      <h3 tal:content="view/label">Subtitle</h3>
+
+      <div id="skel-contents">
+        <span tal:replace="structure view/contents" />
+      </div>
+
+      <div id="results-overview" tal:condition="view/results|nothing">
+        <h2>Results</h2>
+        <div>
+        <p class="documentDescription">Overview</p>
+        <p>Possibly matching places are listed and briefly described in the table below:</p>
+        <table class="listing" id="search-results-overview-table">
+          <tr><th>Modern Places (from <a href="http://www.geonames.org">GeoNames</a>)</th><th>Ancient Places (from <a href="http://pleiades.stoa.org">Pleiades</a>)</th></tr>
+          <tr>
+            <td>
+              <ul>
+                <li tal:repeat="p view/results/modern">
+                  <a tal:content="string:${p/name}, ${p/countryName}" tal:attributes="href p/url"></a> - <span tal:content="p/fcodeName"></span>
+                </li>
+              </ul>
+            </td>
+            <td>
+              <ul>
+                <li tal:repeat="p view/results/ancient">
+                  <a tal:content="p/name" tal:attributes="href p/url"></a> - <span tal:content="python:', '.join(p['placetype'])"></span>
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </table>
+        </div>
+        <div>
+        <p class="documentDescription">Details</p>
+        <p>The sets of possible matches may be obtained in several different detailed formats for analysis: <a href="" tal:attributes="href string:${view/detail_url_base}&f=json">JSON</a>, <a href="" tal:attributes="href string:${view/detail_url_base}&f=kml">KML</a>, <a href="" tal:attributes="href string:${view/detail_url_base}&f=text">Text</a>.</p>
+        <p>Selecting the KML link will open the results as a KML application in Google Earth (or other program).</p>
+        </div>
+
+      </div>
+
+    </tal:main-macro>
+</metal:main>
+
+</body>
+</html>
+
